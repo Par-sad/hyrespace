@@ -1,18 +1,41 @@
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import detail_route
-from .serializers import ProfileSerializer
-from .models import UserProfile
+from rest_framework import viewsets, mixins, permissions
+from django.contrib.auth.models import User
+from users.models import Profile, Skill
+from users.serializers import UserSerializer, ProfileSerializer, SkillSerializer
+from users.permissions import (
+    IsOwnerOrReadOnly, IsAdminUserOrReadOnly, IsSameUserAllowEditionOrReadOnly
+)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsSameUserAllowEditionOrReadOnly,)
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.all()
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    """
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
 
-    @detail_route()
-    def changeTitle(self, request, *args, **kwargs):
-        get = request.GET
-        UserProfile = self.get_object()
-        UserProfile.title = get.get('newTitle')
-        UserProfile.save()
 
-        return Response(UserProfile.title)
+class SkillViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    """
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminUserOrReadOnly)
