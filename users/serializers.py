@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Skill, OwnedSkills
+from .models import Profile, Skill, OwnedSkills, Education, Wh
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile_url = serializers.HyperlinkedIdentityField(
@@ -18,6 +18,25 @@ class SkillSerializer(serializers.HyperlinkedModelSerializer):
         model = Skill
         fields = ('url', 'id', 'name', 'skill_type','description')
 
+
+
+#foreign Key serializer
+class EducationSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+
+        model  = Education
+        fields = ('url', 'id', 'profile', 'edu_name', 'qualification', 'institute', 'description')
+
+class WhSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+
+        model   = Wh
+        fields  = ('url', 'id', 'profile', 'work_name', 'title', 'company_name','description')
+
+
+
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user_url = serializers.HyperlinkedIdentityField(view_name='user-detail')
     user = serializers.ReadOnlyField(source='user.id')
@@ -26,6 +45,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.CharField(source='user.email')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
+    # nest serializer
     owned_skills = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=False,
@@ -33,12 +53,28 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         view_name='skill-detail'
     )
 
+    education = serializers.HyperlinkedIdentityField(
+
+        many=True,
+        read_only=True,
+        view_name = 'education-detail'
+
+    )
+
+    work_history = serializers.HyperlinkedIdentityField(
+
+        many=True,
+        read_only=True,
+        view_name='wh-detail'
+
+    )
+
     class Meta:
         model = Profile
         depth = 1
         fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
                   'about', 'phone', 'birthday', 'linked_in_website', 'twitter_website',
-                  'facebook_website','owned_skills','data_created','date_updated','user','user_url')
+                  'facebook_website','owned_skills','data_created','date_updated','user','user_url','education','work_history')
 
     def get_full_name(self, obj):
         request = self.context['request']

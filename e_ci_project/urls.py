@@ -9,6 +9,9 @@ router.register(r'users', views.UserViewSet)
 router.register(r'profiles', views.ProfileViewSet)
 router.register(r'skills', views.SkillViewSet)
 
+router.register(r'educations', views.EducationViewSet)
+router.register(r'whs', views.WhViewSet)
+
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
 urlpatterns = [

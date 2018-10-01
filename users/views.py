@@ -1,7 +1,7 @@
 from rest_framework import viewsets, mixins, permissions
 from django.contrib.auth.models import User
-from users.models import Profile, Skill
-from users.serializers import UserSerializer, ProfileSerializer, SkillSerializer
+from users.models import Profile, Skill, Education,Wh
+from users.serializers import UserSerializer, ProfileSerializer, SkillSerializer, EducationSerializer,WhSerializer
 from users.permissions import (
     IsOwnerOrReadOnly, IsAdminUserOrReadOnly, IsSameUserAllowEditionOrReadOnly
 )
@@ -37,5 +37,21 @@ class SkillViewSet(viewsets.ModelViewSet):
     """
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminUserOrReadOnly)
+
+
+class EducationViewSet(viewsets.ModelViewSet):
+
+    queryset = Education.objects.all()
+    serializer_class = EducationSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminUserOrReadOnly)
+
+
+class WhViewSet(viewsets.ModelViewSet):
+
+    queryset = Wh.objects.all()
+    serializer_class = WhSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsAdminUserOrReadOnly)

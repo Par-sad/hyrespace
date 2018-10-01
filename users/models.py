@@ -52,3 +52,47 @@ class OwnedSkills(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
+
+
+class Education(models.Model):
+
+    edu_name      = models.CharField(max_length = 50)
+    qualification = models.CharField(max_length = 30)
+    institute     = models.CharField(max_length = 20)
+    description   = models.CharField(max_length = 80, blank = True)
+
+
+    profile = models.ForeignKey(
+        Profile,
+        on_delete = models.CASCADE,
+        related_name = 'education',
+        null = True,
+        blank = True,
+    )
+
+    class Meta:
+        ordering = ['edu_name']
+
+    def __str__(self):
+        return self.edu_name
+
+
+class Wh (models.Model):
+
+    work_name = models.CharField(max_length=30)
+    title = models.CharField(max_length=30)
+    company_name = models.CharField(max_length=30)
+    description = models.CharField(max_length=100, blank=True)
+
+    profile = models.ForeignKey(
+        Profile,
+        related_name = 'work_history',
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        ordering = ['work_name']
+
+    def __str__(self):
+        return self.work_name
+
