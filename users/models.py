@@ -22,6 +22,20 @@ class Skill(models.Model):
     def __unicode__(self):
         return '{0}: {1}'.format(self.name, self.description)
 
+
+class Interest(models.Model):
+
+    inte_name = models.CharField(max_length=30)
+    description = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ['inte_name']
+
+    def __str__(self):
+        return self.inte_name
+
+
+#one-to-one relation
 class Profile(models.Model):
 
     user                = models.OneToOneField(User,
@@ -36,6 +50,7 @@ class Profile(models.Model):
     data_created        = models.DateTimeField(auto_now_add=True)
     date_updated        = models.DateTimeField(auto_now=True)
     owned_skills        = models.ManyToManyField(Skill,)
+    chosen_interests     = models.ManyToManyField(Interest)
 
 
     @receiver(post_save, sender=User)
@@ -47,13 +62,21 @@ class Profile(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
 
-
+# many to many relations
 class OwnedSkills(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
 
+class ChosenInterests(models.Model):
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE,
+                                 null  = True,
+                                 blank = True,)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
+
+
+#foreign Key relations
 class Education(models.Model):
 
     edu_name      = models.CharField(max_length = 50)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Skill, OwnedSkills, Education, Wh
+from .models import Profile, Skill, Education, Wh, Interest
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile_url = serializers.HyperlinkedIdentityField(
@@ -19,6 +19,12 @@ class SkillSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'id', 'name', 'skill_type','description')
 
 
+class InterestSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model  = Interest
+        fields = ('url', 'id', 'inte_name', 'description')
+
 
 #foreign Key serializer
 class EducationSerializer(serializers.HyperlinkedModelSerializer):
@@ -34,7 +40,6 @@ class WhSerializer(serializers.HyperlinkedModelSerializer):
 
         model   = Wh
         fields  = ('url', 'id', 'profile', 'work_name', 'title', 'company_name','description')
-
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -69,12 +74,20 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     )
 
+    chosen_interests  = serializers.HyperlinkedRelatedField(
+        many      = True,
+        read_only = False,
+        queryset  = Interest.objects.all(),
+        view_name = 'interest-detail'
+
+    )
+
     class Meta:
         model = Profile
         depth = 1
         fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
                   'about', 'phone', 'birthday', 'linked_in_website', 'twitter_website',
-                  'facebook_website','owned_skills','data_created','date_updated','user','user_url','education','work_history')
+                  'facebook_website','owned_skills','chosen_interests','data_created','date_updated','user','user_url','education','work_history')
 
     def get_full_name(self, obj):
         request = self.context['request']
@@ -89,13 +102,17 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
         # retrieve Profile
         for attr, value in validated_data.items():
-            if str(attr) != 'owned_skills':
-                setattr(instance, attr, value)
-            else:
-        #put all choosen skills to the list
+            #put all choosen skills & interests to the list
+            if str(attr) == 'owned_skills':
                 instance.owned_skills.set(value)
+
+            elif str(attr) == 'chosen_interests':
+                instance.chosen_interests.set(value)
+
+            else:
+                setattr(instance, attr, value)
+
         instance.user.save()
         instance.save()
         return instance
-
 

@@ -11,6 +11,7 @@ router.register(r'skills', views.SkillViewSet)
 
 router.register(r'educations', views.EducationViewSet)
 router.register(r'whs', views.WhViewSet)
+router.register(r'interests', views.InterestViewSet)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
