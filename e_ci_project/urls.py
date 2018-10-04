@@ -11,6 +11,7 @@ router.register(r'skills', views.SkillViewSet)
 router.register(r'transcripts', views.TranscriptViewSet)
 router.register(r'educations', views.EducationViewSet)
 router.register(r'whs', views.WhViewSet)
+router.register(r'skill_test', views.SkillTestViewSet)
 router.register(r'interests', views.InterestViewSet)
 
 # The API URLs are now determined automatically by the router.

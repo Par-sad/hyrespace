@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Skill, OwnedSkills, Transcript, Education, Wh, Interest
+from .models import Profile, Skill, OwnedSkills, Transcript, Education, Wh, Interest, SkillTest
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile_url = serializers.HyperlinkedIdentityField(
@@ -16,7 +16,7 @@ class SkillSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         depth = 1
         model = Skill
-        fields = ('url', 'id', 'name', 'skill_type','description')
+        fields = ('url', 'id', 'name', 'skill_type')
 
 class TranscriptSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -29,7 +29,7 @@ class InterestSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model  = Interest
-        fields = ('url', 'id', 'inte_name', 'description')
+        fields = ('url', 'id', 'inte_name')
 
 
 #foreign Key serializer
@@ -46,6 +46,13 @@ class WhSerializer(serializers.HyperlinkedModelSerializer):
 
         model   = Wh
         fields  = ('url', 'id', 'profile', 'work_name', 'title', 'company_name','description')
+
+class SkillTestSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+
+        model   = SkillTest
+        fields  = ('url', 'id', 'profile', 'skill_name', 'score')
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -88,6 +95,14 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     )
 
+    skill_test = serializers.HyperlinkedIdentityField(
+
+        many=True,
+        read_only=True,
+        view_name='skill-detail'
+
+    )
+
     chosen_interests  = serializers.HyperlinkedRelatedField(
         many      = True,
         read_only = False,
@@ -101,7 +116,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         depth = 1
         fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
                   'about', 'phone', 'birthday', 'image', 'linked_in_website', 'twitter_website',
-                  'facebook_website','owned_skills','chosen_interests','date_created','date_updated','user','user_url','education','work_history','transcripts')
+                  'facebook_website','owned_skills','chosen_interests','date_created','date_updated','user','user_url','education','work_history','transcripts','skill_test')
 
     def get_full_name(self, obj):
         request = self.context['request']

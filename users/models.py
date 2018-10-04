@@ -19,7 +19,6 @@ class Skill(models.Model):
     )
     name                = models.CharField(max_length=30)
     skill_type          = models.IntegerField(choices=SKILL_TYPE,default=1)
-    description         = models.CharField(max_length=100, blank=True)
 
     class Meta:
         unique_together = ('name',)
@@ -31,11 +30,10 @@ class Skill(models.Model):
 
 class Interest(models.Model):
 
-    inte_name = models.CharField(max_length=30)
-    description = models.CharField(max_length=100, blank=True)
+    inte_name           = models.CharField(max_length=30)
 
     class Meta:
-        ordering = ['inte_name']
+        ordering        = ['inte_name']
 
     def __str__(self):
         return self.inte_name
@@ -57,7 +55,7 @@ class Profile(models.Model):
     date_created        = models.DateTimeField(auto_now_add=True)
     date_updated        = models.DateTimeField(auto_now=True)
     owned_skills        = models.ManyToManyField(Skill,)
-    chosen_interests     = models.ManyToManyField(Interest)
+    chosen_interests    = models.ManyToManyField(Interest)
 
     def __str__(self):
         return self.user.username
@@ -76,8 +74,15 @@ class OwnedSkills(models.Model):
     skill               = models.ForeignKey(Skill, on_delete=models.CASCADE)
     profile             = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
-#new transcript table
 
+class ChosenInterests(models.Model):
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE,
+                                 null  = True,
+                                 blank = True,)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+
+# one to many relations
 class Transcript(models.Model):
     profile             = models.ForeignKey(Profile, related_name='transcripts',on_delete=models.CASCADE, null=True)
     transcript_name     = models.CharField(max_length = 50, default='')
@@ -92,33 +97,24 @@ class Transcript(models.Model):
         return self.transcript_name
 
 
-class ChosenInterests(models.Model):
-    interest = models.ForeignKey(Interest, on_delete=models.CASCADE,
-                                 null  = True,
-                                 blank = True,)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-
-
-
-#foreign Key relations
 class Education(models.Model):
 
-    edu_name      = models.CharField(max_length = 50)
-    qualification = models.CharField(max_length = 30)
-    institute     = models.CharField(max_length = 20)
-    description   = models.CharField(max_length = 80, blank = True)
+    edu_name            = models.CharField(max_length = 50)
+    qualification       = models.CharField(max_length = 30)
+    institute           = models.CharField(max_length = 20)
+    description         = models.CharField(max_length = 80, blank = True)
 
 
-    profile = models.ForeignKey(
+    profile             = models.ForeignKey(
         Profile,
-        on_delete = models.CASCADE,
-        related_name = 'education',
-        null = True,
-        blank = True,
+        on_delete       = models.CASCADE,
+        related_name    = 'education',
+        null            = True,
+        blank           = True,
     )
 
     class Meta:
-        ordering = ['edu_name']
+        ordering        = ['edu_name']
 
     def __str__(self):
         return self.edu_name
@@ -126,20 +122,37 @@ class Education(models.Model):
 
 class Wh (models.Model):
 
-    work_name = models.CharField(max_length=30)
-    title = models.CharField(max_length=30)
-    company_name = models.CharField(max_length=30)
-    description = models.CharField(max_length=100, blank=True)
+    work_name           = models.CharField(max_length=30)
+    title               = models.CharField(max_length=30)
+    company_name        = models.CharField(max_length=30)
+    description         = models.CharField(max_length=100, blank=True)
 
-    profile = models.ForeignKey(
+    profile             = models.ForeignKey(
         Profile,
-        related_name = 'work_history',
-        on_delete=models.CASCADE,
+        related_name    = 'work_history',
+        on_delete       = models.CASCADE,
     )
 
     class Meta:
-        ordering = ['work_name']
+        ordering        = ['work_name']
 
     def __str__(self):
         return self.work_name
+
+class SkillTest (models.Model):
+
+    skill_name          = models.CharField(max_length=30)
+    score               = models.IntegerField(null=True, blank=True)
+
+    profile             = models.ForeignKey(
+        Profile,
+        related_name    = 'skill_test',
+        on_delete       = models.CASCADE,
+    )
+
+    class Meta:
+        ordering        = ['skill_name']
+
+    def __str__(self):
+        return self.skill_name
 
