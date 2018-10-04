@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Skill, Education, Wh, Interest
+from .models import Profile, Skill, OwnedSkills, Transcript, Education, Wh, Interest
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile_url = serializers.HyperlinkedIdentityField(
@@ -18,6 +18,12 @@ class SkillSerializer(serializers.HyperlinkedModelSerializer):
         model = Skill
         fields = ('url', 'id', 'name', 'skill_type','description')
 
+class TranscriptSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+
+        model = Transcript
+        fields = ('url','id','profile','transcript_name','transcript')
 
 class InterestSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -50,13 +56,21 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.CharField(source='user.email')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
-    # nest serializer
+
     owned_skills = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=False,
         queryset=Skill.objects.all(),
         view_name='skill-detail'
     )
+    #transcript foreign key
+    transcripts = serializers.HyperlinkedIdentityField(
+
+        many=True,
+        read_only=True,
+        view_name='transcript-detail'
+    )
+
 
     education = serializers.HyperlinkedIdentityField(
 
@@ -86,8 +100,8 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = Profile
         depth = 1
         fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
-                  'about', 'phone', 'birthday', 'linked_in_website', 'twitter_website',
-                  'facebook_website','owned_skills','chosen_interests','data_created','date_updated','user','user_url','education','work_history')
+                  'about', 'phone', 'birthday', 'image', 'linked_in_website', 'twitter_website',
+                  'facebook_website','owned_skills','chosen_interests','date_created','date_updated','user','user_url','education','work_history','transcripts')
 
     def get_full_name(self, obj):
         request = self.context['request']
@@ -115,4 +129,11 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         instance.user.save()
         instance.save()
         return instance
+
+    def create(self, validated_data):
+        transcripts_data = validated_data.pop('transcripts')
+        profile = Profile.objects.create(**transcripts_data)
+        for transcript_data in transcripts_data:
+            Transcript.objects.create(profile=profile, **transcript_data)
+        return profile
 

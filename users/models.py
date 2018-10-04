@@ -3,24 +3,30 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import uuid
 # Create your models here.
+
+#new function for deal with duplicated name for the avatar
+def scramble_uploaded_filename(instance, filename):
+    extension = filename.split(".")[-1]
+    return "{}.{}".format(uuid.uuid4(), extension)
 
 class Skill(models.Model):
 
-    SKILL_TYPE = (
+    SKILL_TYPE          = (
         (1, "technical skill"),
         (2, "soft skill")
     )
-    name = models.CharField(max_length=30)
-    skill_type = models.IntegerField(choices=SKILL_TYPE,default=1)
-    description = models.CharField(max_length=100, blank=True)
+    name                = models.CharField(max_length=30)
+    skill_type          = models.IntegerField(choices=SKILL_TYPE,default=1)
+    description         = models.CharField(max_length=100, blank=True)
 
     class Meta:
         unique_together = ('name',)
-        ordering = ['name']
+        ordering        = ['name']
 
-    def __unicode__(self):
-        return '{0}: {1}'.format(self.name, self.description)
+    def __str__(self):
+        return self.name
 
 
 class Interest(models.Model):
@@ -44,14 +50,17 @@ class Profile(models.Model):
     about               = models.TextField(max_length=100, blank=True, default='')
     phone               = models.IntegerField(null=True, blank=True)
     birthday            = models.DateField(null=True, blank=True)
+    image               = models.ImageField('Avatar', upload_to=scramble_uploaded_filename, null=True, blank=True) #new
     linked_in_website   = models.URLField(null=True, blank=True)
     twitter_website     = models.URLField(null=True, blank=True)
     facebook_website    = models.URLField(null=True, blank=True)
-    data_created        = models.DateTimeField(auto_now_add=True)
+    date_created        = models.DateTimeField(auto_now_add=True)
     date_updated        = models.DateTimeField(auto_now=True)
     owned_skills        = models.ManyToManyField(Skill,)
     chosen_interests     = models.ManyToManyField(Interest)
 
+    def __str__(self):
+        return self.user.username
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -64,8 +73,23 @@ class Profile(models.Model):
 
 # many to many relations
 class OwnedSkills(models.Model):
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    skill               = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    profile             = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+#new transcript table
+
+class Transcript(models.Model):
+    profile             = models.ForeignKey(Profile, related_name='transcripts',on_delete=models.CASCADE, null=True)
+    transcript_name     = models.CharField(max_length = 50, default='')
+    transcript          = models.FileField('Transcript',upload_to=scramble_uploaded_filename, null=True, blank=True) #new
+    date_created        = models.DateTimeField(auto_now_add=True)
+    date_updated        = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['transcript_name']
+
+    def __str__(self):
+        return self.transcript_name
 
 
 class ChosenInterests(models.Model):

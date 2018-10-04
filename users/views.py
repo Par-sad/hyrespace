@@ -1,7 +1,7 @@
 from rest_framework import viewsets, mixins, permissions
 from django.contrib.auth.models import User
-from users.models import Profile, Skill, Education,Wh,Interest
-from users.serializers import UserSerializer, ProfileSerializer, SkillSerializer, EducationSerializer,WhSerializer, InterestSerializer
+from users.models import Profile, Skill, Transcript, Education,Wh,Interest
+from users.serializers import UserSerializer, ProfileSerializer, SkillSerializer, TranscriptSerializer, EducationSerializer,WhSerializer, InterestSerializer
 from users.permissions import (
     IsOwnerOrReadOnly, IsAdminUserOrReadOnly, IsSameUserAllowEditionOrReadOnly
 )
@@ -40,6 +40,16 @@ class SkillViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsAdminUserOrReadOnly)
 
+class TranscriptViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    """
+    queryset = Transcript.objects.all()
+    serializer_class = TranscriptSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminUserOrReadOnly)
 
 class EducationViewSet(viewsets.ModelViewSet):
 
