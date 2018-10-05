@@ -2,6 +2,9 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 from users import views
+# import the media path
+from django.views.static import serve
+from e_ci_project.settings import MEDIA_ROOT
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -19,5 +22,7 @@ router.register(r'interests', views.InterestViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^api-token-auth/', obtain_jwt_token, name='api-token-auth')
+    url(r'^api-token-auth/', obtain_jwt_token, name='api-token-auth'),
+    # define the file path to url
+    url(r'^media/(?P<path>.*)$', serve, {"document_root":MEDIA_ROOT})
 ]

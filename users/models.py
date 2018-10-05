@@ -7,9 +7,13 @@ import uuid
 # Create your models here.
 
 #new function for deal with duplicated name for the avatar
-def scramble_uploaded_filename(instance, filename):
+def scramble_uploaded_image(instance, filename):
     extension = filename.split(".")[-1]
-    return "{}.{}".format(uuid.uuid4(), extension)
+    return "Avatar/{}.{}".format(uuid.uuid4(), extension)
+
+def scramble_uploaded_transcript(instance, filename):
+    extension = filename.split(".")[-1]
+    return "Transcript/{}.{}".format(uuid.uuid4(), extension)
 
 class Skill(models.Model):
 
@@ -48,7 +52,7 @@ class Profile(models.Model):
     about               = models.TextField(max_length=100, blank=True, default='')
     phone               = models.IntegerField(null=True, blank=True)
     birthday            = models.DateField(null=True, blank=True)
-    image               = models.ImageField('Avatar', upload_to=scramble_uploaded_filename, null=True, blank=True) #new
+    image               = models.ImageField('Avatar', upload_to=scramble_uploaded_image, null=True, blank=True) #new
     linked_in_website   = models.URLField(null=True, blank=True)
     twitter_website     = models.URLField(null=True, blank=True)
     facebook_website    = models.URLField(null=True, blank=True)
@@ -86,7 +90,7 @@ class ChosenInterests(models.Model):
 class Transcript(models.Model):
     profile             = models.ForeignKey(Profile, related_name='transcripts',on_delete=models.CASCADE, null=True)
     transcript_name     = models.CharField(max_length = 50, default='')
-    transcript          = models.FileField('Transcript',upload_to=scramble_uploaded_filename, null=True, blank=True) #new
+    transcript          = models.FileField('Transcript',upload_to=scramble_uploaded_transcript, null=True, blank=True) #new
     date_created        = models.DateTimeField(auto_now_add=True)
     date_updated        = models.DateTimeField(auto_now=True)
 
