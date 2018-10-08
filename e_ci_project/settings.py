@@ -39,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #local party
     'users.apps.UsersConfig',
+    'jobs.apps.JobsConfig',
     #3rd party
     'rest_framework',
+    'taggit',
+    'taggit_serializer',
 ]
 
 MIDDLEWARE = [
