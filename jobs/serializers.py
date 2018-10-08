@@ -2,8 +2,28 @@ from rest_framework import serializers
 #from django.contrib.auth.models import User
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
+
+import six
+
 from .models import Company,Category,Job
 
+
+
+# tag serializer
+class NewTagListSerializerField(TagListSerializerField):
+    def to_internal_value(self, value):
+        if isinstance(value, six.string_types):
+            value = value.split(',')
+
+        if not isinstance(value, list):
+            self.fail('not_a_list', input_type=type(value).__name__)
+
+        for s in value:
+            if not isinstance(s, six.string_types):
+                self.fail('not_a_str')
+
+            self.child.run_validation(s)
+        return value
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
@@ -45,10 +65,10 @@ class JobSerializer(TaggitSerializer,serializers.HyperlinkedModelSerializer):
 
 
     # tag serializer
-    tags = TagListSerializerField()
+    tags = NewTagListSerializerField()
 
     class Meta:
         model = Job
-        fields = ('url','id','company','title','description','tags','location','category','start_date',
+        fields = ('url','id','status','company','title','description','tags','location','category','start_date',
                   'due_date','date_add', 'date_updated')
 

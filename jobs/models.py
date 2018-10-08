@@ -41,13 +41,16 @@ class Job(models.Model):
         (1,'Open'),
         (2,'Suspended'),
         (3,'Filled'),
-        (4,'Cancelled'),
+        (4,'Cancelled')
     )
 
     #post_by = models.ForeignKey()
+
+    status = models.IntegerField('status', choices=STATUS_CHOICES, default=1)
     company = models.ForeignKey(Company, on_delete=models.CASCADE,
                                 related_name='job',
                                 null = True, blank = True)
+
     title    = models.CharField('title',max_length = 200)
     #title_slug (if repeated job title appeared)
     description = models.TextField('description', blank = True, default='')
