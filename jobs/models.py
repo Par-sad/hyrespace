@@ -3,6 +3,7 @@ from django.db import models
 from datetime import datetime
 
 from taggit.managers import TaggableManager
+
 # Create your models here.
 class Company(models.Model):
     """

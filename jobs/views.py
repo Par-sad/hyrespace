@@ -3,6 +3,8 @@ from rest_framework import viewsets, mixins, permissions
 from jobs.models import Company,Category,Job
 from jobs.serializers import CompanySerializer,CategorySerializer,JobSerializer
 
+from jobs.filter import JobFilter
+
 # Create your views here.
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -18,4 +20,7 @@ class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
 
-#to finally save the tags to the previously saved Job-model.
+    #filter function initialize
+    #filter_backends = (DjangoFilterBackend,)
+    filter_class = JobFilter
+

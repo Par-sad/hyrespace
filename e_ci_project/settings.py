@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'taggit',
     'taggit_serializer',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -111,8 +112,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 # rest_framework property
 REST_FRAMEWORK = {
+    #Pagination setting
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    # filter setting
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 
