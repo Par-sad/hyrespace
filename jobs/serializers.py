@@ -9,7 +9,6 @@ from .models import Company,Category,Job
 # tag serializer
 
 
-
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
 
 #foreign key
