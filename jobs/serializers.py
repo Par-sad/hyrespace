@@ -62,3 +62,10 @@ class JobSerializer(TaggitSerializer,serializers.HyperlinkedModelSerializer):
         return instance
 
 
+    def validate(self, data):
+        """
+        Check that the start is before the stop.
+        """
+        if data['start_date'] > data['due_date']:
+            raise serializers.ValidationError("finish must occur after start")
+        return data

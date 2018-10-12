@@ -8,7 +8,7 @@ from jobs.models import Job, Category
 
 class TagsFilter(filters.CharFilter):
     """
-    Return all objects which match any of the provided tags
+    Return all objects which match any of the provided tags, ||
     """
 
     def filter(self, queryset, value):
@@ -26,11 +26,13 @@ class JobFilter(django_filters.FilterSet):
     location = django_filters.CharFilter(field_name = 'location', lookup_expr = 'icontains')
     tag = TagsFilter(field_name = "tags",lookup_expr = 'icontains')
     category = django_filters.CharFilter(field_name = 'category__cate_name')
+    s_date = django_filters.DateFromToRangeFilter(field_name = "start_date")
+    e_date = django_filters.DateFromToRangeFilter(field_name = "due_date")
 
 
 
     class Meta:
         model = Job
-        fields = ['title','location','category','tag']
+        fields = ['title','location','category','tag','s_date','e_date']
 
 
