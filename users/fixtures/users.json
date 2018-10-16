@@ -1,6 +1,6 @@
 [
 {
-    "model": "auth.user",
+    "model": "users.CustomUser",
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$36000$qV2rrsMZ73Uf$5vBIB0lh/5Iq/8yyaqGrJU7rpMj+OiNKYzZUsIrPra8=",
@@ -10,6 +10,7 @@
         "first_name": "Guido Cecilio",
         "last_name": "Garcia Bernal",
         "email": "guidocecilio@gmail.com",
+        "user_type": 1,
         "is_staff": true,
         "is_active": true,
         "date_joined": "2017-07-22T22:00:52.817Z",
@@ -18,7 +19,7 @@
     }
 },
 {
-    "model": "auth.user",
+    "model": "users.CustomUser",
     "pk": 2,
     "fields": {
         "password": "pbkdf2_sha256$36000$updaciPJkJqn$kpip8IneWOjNOqtnbEGOE7XUOlVnYlsRu5I4T4fGTrs=",
@@ -28,6 +29,7 @@
         "first_name": "Guido Enmanuel",
         "last_name": "Garcia Acosta",
         "email": "guidoenmanuel@gmail.com",
+        "user_type": 1,
         "is_staff": false,
         "is_active": true,
         "date_joined": "2017-07-22T22:20:30.365Z",
@@ -36,7 +38,7 @@
     }
 },
 {
-    "model": "auth.user",
+    "model": "users.CustomUser",
     "pk": 3,
     "fields": {
         "password": "pbkdf2_sha256$36000$Tm8CpLRLdnJ8$vSqt2TKi2SLuKkygWQe7zv6Wp5Hws3kg2qC/Xd+mzhg=",
@@ -46,6 +48,7 @@
         "first_name": "Guido Cecilio",
         "last_name": "Garcia Bernal",
         "email": "guidocecilio@gmail.com",
+        "user_type": 2,
         "is_staff": false,
         "is_active": true,
         "date_joined": "2017-07-23T07:52:03.530Z",
