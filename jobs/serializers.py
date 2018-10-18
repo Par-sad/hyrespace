@@ -1,12 +1,13 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ParseError
+
+from .models import Company,Category,Job
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 
-
-from .models import Company,Category,Job
-
-
 # tag serializer
+
+
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
@@ -55,6 +56,7 @@ class JobSerializer(TaggitSerializer,serializers.HyperlinkedModelSerializer):
         fields = ('url','id','status','company','title','description','tags','location','category','start_date',
                   'due_date','date_add', 'date_updated')
 
+
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         instance = super(JobSerializer, self).create(validated_data)
@@ -66,6 +68,7 @@ class JobSerializer(TaggitSerializer,serializers.HyperlinkedModelSerializer):
         """
         Check that the start is before the stop.
         """
-        if data['start_date'] > data['due_date']:
-            raise serializers.ValidationError("finish must occur after start")
+        if data['start_date'] != None and data['due_date']!=None:
+            if data['start_date'] > data['due_date']:
+                raise serializers.ValidationError("finish must occur after start")
         return data
