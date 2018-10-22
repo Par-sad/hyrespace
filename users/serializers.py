@@ -5,20 +5,12 @@ from .models import StudentProfile, CompanyProfile, Skill, OwnedSkills, Transcri
 
 #change the model and add user_type field
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    profile_url = serializers.HyperlinkedIdentityField(view_name='studentprofile-detail')
-    def student_or_company(self, data):
-        user_type = data.get('user_type')
-        if user_type == 1:
-            profile_url = serializers.HyperlinkedIdentityField(view_name='studentprofile-detail')
-        else:
-            profile_url = serializers.HyperlinkedIdentityField(view_name='companyprofile-detail')
-        return profile_url
 
     class Meta:
         model = get_user_model()
         depth = 1
         fields = ('url', 'id', 'username', 'first_name', 'last_name', 'email','user_type',
-                  'is_superuser', 'is_staff', 'profile_url')
+                  'is_superuser', 'is_staff')
 
 class SkillSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -64,13 +56,7 @@ class SkillTestSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class StudentProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user_url = serializers.HyperlinkedIdentityField(view_name='customuser-detail')
-    user = serializers.ReadOnlyField(source='user.id')
-    id = serializers.IntegerField(source='pk', read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    email = serializers.CharField(source='user.email')
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
+    user = UserSerializer(read_only = True)
 
     owned_skills = serializers.HyperlinkedRelatedField(
         many=True,
@@ -122,9 +108,8 @@ class StudentProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = StudentProfile
         depth = 1
-        fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
-                  'about', 'phone', 'birthday', 'image', 'linked_in_website', 'twitter_website',
-                  'facebook_website','owned_skills','chosen_interests','date_created','date_updated','user','user_url','education','work_history','transcripts','skill_test')
+        fields = ('url', 'id', 'user','location', 'about', 'phone', 'birthday', 'image', 'linked_in_website', 'twitter_website',
+                  'facebook_website','owned_skills','chosen_interests','date_created','date_updated','education','work_history','transcripts','skill_test')
 
     def get_full_name(self, obj):
         request = self.context['request']
@@ -163,13 +148,7 @@ class PolicySerializer(serializers.HyperlinkedModelSerializer):
 
 #create the company profile Serializer
 class CompanyProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user_url = serializers.HyperlinkedIdentityField(view_name='customuser-detail')
-    user = serializers.ReadOnlyField(source='user.id')
-    id = serializers.IntegerField(source='pk', read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    email = serializers.CharField(source='user.email')
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
+    user = UserSerializer(read_only = True)
 
     policies = serializers.HyperlinkedIdentityField(
 
@@ -182,6 +161,5 @@ class CompanyProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CompanyProfile
         depth = 1
-        fields = ('url', 'id', 'username', 'email', 'first_name', 'last_name', 'location', 
-                  'about', 'phone', 'tax', 'image', 'linked_in_website', 'twitter_website',
-                  'facebook_website','policies','date_created','date_updated','user','user_url')
+        fields = ('url', 'id', 'user','location', 'about', 'phone', 'tax', 'image', 'linked_in_website', 
+                  'twitter_website','facebook_website','policies','date_created','date_updated','user')

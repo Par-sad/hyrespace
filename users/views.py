@@ -13,8 +13,9 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
-    queryset = get_user_model().objects.all()
+
     serializer_class = UserSerializer
+    queryset = get_user_model().objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsSameUserAllowEditionOrReadOnly,)
 
@@ -25,8 +26,9 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
     `update` and `destroy` actions.
 
     """
-    queryset = StudentProfile.objects.all()
+
     serializer_class = StudentProfileSerializer
+    queryset = StudentProfile.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 

@@ -74,9 +74,12 @@ class StudentProfile(models.Model):
     owned_skills        = models.ManyToManyField(Skill,)
     chosen_interests    = models.ManyToManyField(Interest)
 
+    @property
+    def user__user_id(self):
+        return self.user.id
+
     def __str__(self):
         return self.user.username
-
 
 # many to many relations
 class OwnedSkills(models.Model):
